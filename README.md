@@ -1,70 +1,69 @@
-# 🌱 Lawn-AI — AI-Powered Lawn Care Forecasting
+# 🌱 Lawn-AI — AI Forecast + Shopping Guide
 
-Lawn-AI turns years of lawn-care service receipts (PDFs) into a personalized **next-year lawn treatment forecast**.
+**Transform PDF receipts → 12-month lawn treatment forecast + where to buy each product**
 
-It uses:
+Lawn-AI uses AI embeddings and neural networks to learn your lawn's seasonal patterns from past service receipts, predicts next year's needs, then finds where to buy each product.
 
-- **AI PDF parsing** (PyMuPDF)
-- **NLP semantic embeddings** (Ollama)
-- **Neural network time-series forecasting**
-- **Human-readable forecast summaries**
+## Main Deliverable
 
-The result is an AI agronomist that learns your lawn's seasonal patterns and predicts fertilizer, weed control, insect control, iron, potash, and sulfur treatments for the upcoming year.
+**`output/forecast_and_shopping_guide.html`** ← Open this in your browser
+- 12-month treatment forecast  
+- Shopping recommendations for each product  
+- Live retailer links  
+- Print-friendly (save as PDF)
 
----
+## Quick Start (5 min)
 
-## 📌 Features
+```bash
+# Setup
+cd MCP && cp .env.example .env
+# Edit .env and add Serper API key (free at https://serper.dev)
+pip install -r requirements.txt && python server.py
 
-- ✅ Extracts structured data from messy PDFs  
-- ✅ Parses notes, products, quantities, dates, and application methods  
-- ✅ Converts notes into **semantic vectors** using an embedding model  
-- ✅ Uses a lightweight neural network to learn seasonal usage patterns  
-- ✅ Generates:
-  - `processed.json` — parsed historical data  
-  - `forecast.json` — raw numeric model output  
-  - `historical_data.json` — monthly product categories with embeddings
-  - `historical_data.csv` — spreadsheet-friendly historical summary
-  - `forecast_vector_trends.json` — trend analysis
+# Generate report
+cd .. && python generate_combined_report.py
 
----
-
-## 🏗️ Architecture
-
+# View
+open output/forecast_and_shopping_guide.html
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Your Lawn Care PDF Receipts                  │
-│              (dates, products, volumes, notes)                  │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-        ┌────────────────────▼────────────────────┐
-        │   LAYER 1: AI Document Extraction      │
-        │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
-        │  • PyMuPDF PDF text extraction          │
-        │  • Regex-based field parsing            │
-        │  • Product categorization               │
-        │  Output: parsed products, dates, notes  │
-        └────────────────────┬────────────────────┘
-                             │
-        ┌────────────────────▼────────────────────┐
-        │   LAYER 2: NLP Semantic Embeddings     │
-        │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
-        │  • Ollama embedding model (768-dim)     │
-        │  • Converts service notes → vectors     │
-        │  • Captures semantic meaning            │
-        │  Output: [768] float vectors per month  │
-        └────────────────────┬────────────────────┘
-                             │
-        ┌────────────────────▼────────────────────┐
-        │  LAYER 3: Neural Time-Series Learning  │
-        │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
-        │  • Aggregates historical patterns       │
-        │  • Learns seasonal cycles               │
-        │  • Computes 12-month averages           │
-        │  Output: forecasted product volumes    │
-        └────────────────────┬────────────────────┘
-                             │
-        ┌────────────────────▼────────────────────┐
-        │  LAYER 4: Agronomic Recommendations    │
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `output/forecast_and_shopping_guide.html` | **Main report** ← start here |
+| `MCP/README.md` | Quick tech reference |
+| `MCP/SECURITY_CONCEPTS.md` | AI security learning (6-8 hrs) |
+| `PROJECT_STATUS.md` | Project overview |
+
+## Tech Stack
+
+- **PDF Parsing**: PyMuPDF
+- **Embeddings**: Ollama (semantic)
+- **Forecasting**: Neural network
+- **Shopping**: Serper API
+- **Report**: HTML + CSS
+- **Validation**: Pydantic + security patterns
+
+## Learning (Optional)
+
+If interested in AI security engineering patterns, see `MCP/README.md`:
+- Credential management
+- Input validation
+- Safe file operations
+- API error handling
+- Rate limiting
+
+These patterns are used at: Anthropic, OpenAI, Google, Stripe.
+
+## Status
+
+✅ Forecast complete (12 months)  
+✅ Shopping complete (10+ products)  
+✅ HTML report complete  
+✅ Security patterns documented  
+
+See `PROJECT_STATUS.md` for details.
         │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
         │  • Next-year product predictions        │
         │  • Seasonal timing guidance             │

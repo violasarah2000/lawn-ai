@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawn-AI Forecast & Shopping Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c5f2d 0%, #1a3a1b 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .timestamp {
+            text-align: center;
+            padding: 15px 30px;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 0.9em;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .month-section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .month-header {
+            background: linear-gradient(135deg, #4a7c4e 0%, #2c5f2d 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .month-header .month-number {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        
+        .month-content {
+            padding: 20px;
+        }
+        
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .products-table thead {
+            background: #f5f5f5;
+        }
+        
+        .products-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+        }
+        
+        .products-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .products-table tr:hover {
+            background: #fafafa;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #2c5f2d;
+        }
+        
+        .shopping-section {
+            background: #f9f9f9;
+            border-left: 4px solid #4a7c4e;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        
+        .shopping-section h4 {
+            color: #2c5f2d;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .shopping-results {
+            margin-left: 20px;
+        }
+        
+        .shopping-option {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .shopping-option:hover {
+            border-color: #4a7c4e;
+            box-shadow: 0 2px 8px rgba(74, 124, 78, 0.1);
+        }
+        
+        .shopping-option-title {
+            font-weight: 600;
+            color: #2c5f2d;
+            margin-bottom: 5px;
+        }
+        
+        .shopping-option-snippet {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .shopping-option-link {
+            display: inline-block;
+            background: #2c5f2d;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: background 0.3s;
+        }
+        
+        .shopping-option-link:hover {
+            background: #1a3a1b;
+        }
+        
+        .notes {
+            background: #fffacd;
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .notes strong {
+            color: #b8860b;
+        }
+        
+        .no-shopping {
+            color: #999;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .footer {
+            background: #f0f0f0;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #4a7c4e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-box h3 {
+            color: #2c5f2d;
+            margin-bottom: 10px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c5f2d;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .month-section {
+                page-break-inside: avoid;
+            }
+            
+            .shopping-option-link {
+                color: #2c5f2d;
+                text-decoration: underline;
+                background: none;
+                border: 1px solid #2c5f2d;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .month-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Lawn-AI Forecast & Shopping Guide</h1>
+            <p>12-Month Lawn Treatment Plan with Product Recommendations</p>
+        </div>
+        
+        <div class="timestamp">
+            Generated on December 04, 2025 at 03:25 PM
+        </div>
+
+        <div class="content">
+            <div class="summary-box">
+                <h3>📊 Overview</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Months of Treatments</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">44</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">9</div>
+                        <div class="stat-label">Products with Shopping Links</div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>January</span>
+                <span class="month-number">Month 1</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">0-0-62, SOLUBLE POTASH (POTASSIUM) EPA#</td>
+                            <td>6.4516</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">0-0-62 MOP Potassium Fertilizer - Lawn Synergy</div>
+                                            <div class="shopping-option-snippet">0-0-62 Muriate of Potash (MOP) Fertilizer delivers a powerful dose of potassium to improve drought tolerance and strengthen turf and plants.</div>
+                                            <a href="https://lawnsynergy.com/products/0-0-62-muriate-of-potash?srsltid=AfmBOooNlTJJ5D2HJY1HvuQrDJXbg-XVPw-eoZjeLm4NZJ1JnOt-IZCd" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Amazon.com : 0-0-62 Muriate of Potash Plant & Lawn Fertilizer - 15lbs.</div>
+                                            <div class="shopping-option-snippet">Potassium Powerhouse: Our Muriate of Potash delivers a concentrated dose of potassium, a vital element for flowering, fruiting, and overall plant resilience.</div>
+                                            <a href="https://www.amazon.com/0-0-62-Muriate-Potash-Lawn-Fertilizer/dp/B0D8G4XFTT" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO 0-0-62 AM MOP Turfgrass Soluble Fertilizer 50 lb. Bag</div>
+                                            <div class="shopping-option-snippet">62% soluble potash (K₂O) enhances turf tolerance to drought, wear, and disease. · Dual application use – can be spread dry or dissolved for spray applications.</div>
+                                            <a href="https://www.siteone.com/en/098661-lesco-0-0-62-am-mop-turfgrass-soluble-fertilizer-50-lb-bag/p/337984?srsltid=AfmBOopxvPQnDYYbqUpR-gmAV1De3HGjIWbQ6_s96X1zeayA4itwXFRR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CLASH (DICAMBA) EPA# 228-615</td>
+                            <td>0.0915</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Clash™ - US - Crop - Nufarm</div>
+                                            <div class="shopping-option-snippet">Clash controls difficult ALS- and triazine-resistant annual weeds in addition to a broad spectrum of perennial and biennial weeds.</div>
+                                            <a href="https://nufarm.com/uscrop/product/clash/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Chemical Control of Broadleaf Weeds in Turf</div>
+                                            <div class="shopping-option-snippet">In a tank mixture with 2,4-D, dicamba, MCPA and other various combinations use QuickSilver at 1.0 fl oz/A. Time Apply when broadleaf weeds listed on label are ...</div>
+                                            <a href="https://pnwhandbooks.org/weed/horticultural/turfgrass/chemical-control-broadleaf-weeds-turf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] Clash® Selective Herbicide - Greenbook.net</div>
+                                            <div class="shopping-option-snippet">This chemical is a pesticide product registered by the U.S. Environmental Protection Agency and is subject to certain labeling requirements under federal ...</div>
+                                            <a href="https://assets.greenbook.net/19-57-26-02-05-2025-Clash_Selective_Herbicide_-_sds.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">RHOMENE MCPA (MCPA) EPA# 228-143-71368</td>
+                            <td>1.0051</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Perennial Broadleaf Weeds </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Rhomene MCPA Herbicide - 2.5 Gallon [228-143-71368] - $109.95</div>
+                                            <div class="shopping-option-snippet">Rhomene MCPA Herbicide - 2.5 Gallon Jug. Post-emergent control of Broadleaf weeds. Rhomene MCPA Herbicide is for use in: Wheat, oats, barley, flax and rye ...</div>
+                                            <a href="https://www.keystonepestsolutions.com/index.php?main_page=product_info&products_id=474&srsltid=AfmBOorm9-FrgZ8fdkBP2U7owXkNZ2Xk-qlj1nZ19g6vLlLfF9AR259c" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] RHOMENE® - Agrian</div>
+                                            <div class="shopping-option-snippet">EFFECTIVENESS ON WEEDS: Nufarm Rhomene MCPA Broadleaf Herbicide is effective on a large number of broadleaf weeds. On Mustard, Thistle, and. White top or Hoary ...</div>
+                                            <a href="http://fs1.agrian.com/pdfs/Rhomene_Label.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] Rhomene® MCPA - Amazon S3</div>
+                                            <div class="shopping-option-snippet">In established grasses apply in spring before head comes into boot stage and on seedling grass after grass has tillered. NOTE: For weed control in grasses, ...</div>
+                                            <a href="https://s3-us-west-1.amazonaws.com/www.agrian.com/pdfs/Nufarm_Rhomene_MCPA_Label2h.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">33-3-6 50% SCU (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>3.0</td>
+                            <td>LB</td>
+                            <td>Chickweed, Clover, Dandelion, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional ...</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 NPK 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer | KNX1566399</div>
+                                            <a href="https://www.heritageplus.com/knx1566399-knox-fertilizer-company-turf-fertilizer-50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-1566399" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">lawnDOMINATOR™ 33-3-6 - Sward Yard</div>
+                                            <div class="shopping-option-snippet">lawnDOMINATOR™ 33-3-6 is loaded with slow-release nitrogen and a bit of potassium for overall plant vitality to keep your yard healthy through summer.</div>
+                                            <a href="https://swardyard.com/lawnDOMINATOR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Buy 50 lb Granular Turf Fertilizer 33-3-6 for Lawns - Growcycle</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer by Knox Fertilizer Company for vibrant, healthy turf.</div>
+                                            <a href="https://growcycle.com/gl-irrigation-and-landscape-supply/landscaping/sports-fields/50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-turf-fertilizer-knx1566399-greenline-irrigation-and-landscape-supply?srsltid=AfmBOoqxjkxoK6VlEoqGL9JwCQJFRTr9EVzhK4Q5g-vf45eatcEB44EW" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">TRIPOWER (MCPA,MECOPROP-P,DICAMBA) EPA# 228-262</td>
+                            <td>0.9183</td>
+                            <td>OZ</td>
+                            <td>Chickweed, Clover, Dandelion, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Tri-Power® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Tri-Power is a liquid, three-way herbicide for broadleaf weeds in lawns and turf, used in 2,4-D sensitive areas, and tolerant to warm and cool season turfgrass.</div>
+                                            <a href="https://nufarm.com/usturf/product/tri-power/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] Selective Herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">FOR SELECTIVE BROADLEAF WEED CONTROL IN. ORNAMENTAL LAWNS AND TURF GRASSES. ALSO. FOR WOODY PLANTS, ROADSIDES, AND NON-CROP.</div>
+                                            <a href="https://labelsds.com/images/user_uploads/NY%20Stamped%20TriPower%20Label%2011-15-17.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Mixtures without Triclopyr</div>
+                                            <div class="shopping-option-snippet">Triplet is a selective broadleaf weed control for use on sod farms, highways, rights-of-way, ornamental turf, parks, cemeteries, athletic fields, and golf ...</div>
+                                            <a href="https://pnwhandbooks.org/weed/horticultural/turfgrass/mixtures-without-triclopyr" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied potash fertilizer to strengthen the root system of your lawn plus weed control to manage existing broadleaf weeds. You 
+should see weeds discolor and decline in 14-21 days.  
+WHAT I NOTICED
+•
+I noticed the leaves on your lawn are not thick enough to affect the application; I completed today's service successfully. 
+•
+Today's rain provides the necessary moisture to make the lawn treatment effective. 
+•
+I noticed some matted/brown lawn areas. 
+•
+I noticed common weeds in your la...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>February</span>
+                <span class="month-number">Month 2</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">33-3-6 50% SCU (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>3.0</td>
+                            <td>LB</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional ...</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 NPK 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer | KNX1566399</div>
+                                            <a href="https://www.heritageplus.com/knx1566399-knox-fertilizer-company-turf-fertilizer-50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-1566399" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">lawnDOMINATOR™ 33-3-6 - Sward Yard</div>
+                                            <div class="shopping-option-snippet">lawnDOMINATOR™ 33-3-6 is loaded with slow-release nitrogen and a bit of potassium for overall plant vitality to keep your yard healthy through summer.</div>
+                                            <a href="https://swardyard.com/lawnDOMINATOR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Buy 50 lb Granular Turf Fertilizer 33-3-6 for Lawns - Growcycle</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer by Knox Fertilizer Company for vibrant, healthy turf.</div>
+                                            <a href="https://growcycle.com/gl-irrigation-and-landscape-supply/landscaping/sports-fields/50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-turf-fertilizer-knx1566399-greenline-irrigation-and-landscape-supply?srsltid=AfmBOoqxjkxoK6VlEoqGL9JwCQJFRTr9EVzhK4Q5g-vf45eatcEB44EW" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SULFUR,DISPERSABLE 90% S (SULFUR) EPA#</td>
+                            <td>7.0</td>
+                            <td>LB</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">DISPER-SUL Pastelle Water Dispersible Sulfur 90%S 50 lb - SiteOne</div>
+                                            <div class="shopping-option-snippet">DISPER-SUL Pastelle Water Dispersible Sulfur 90%S 50 lb. Martin uses only the purest sulfur combined with a special formulation of bentonite clay and ...</div>
+                                            <a href="https://www.siteone.com/en/bfs90p50-vp-disper-sul-pastelle-water-dispersible-sulfur-90s-50-lb/p/433731?srsltid=AfmBOoqAEP1JSO-VPn6ClLZRmxdC_5ESCgR-VRuxsFWZRFX_Y69cpTAl" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Mears - 90% Sulfur - 50 LB BAG - Reinders</div>
+                                            <div class="shopping-option-snippet">Water degradable sulfur is a 90% sulfur product. Martin uses only the purest sulfur combined with a special formulation of bentonite clay and wetting agents.</div>
+                                            <a href="https://www.reinders.com/mears-90-percent-sulfur-50-lb-bag/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Disper-Sul 90% Sulfur - Green House and Garden Supply |</div>
+                                            <div class="shopping-option-snippet">Disper-Sul is a 90% sulfur, water-degradable pastille used as a soil amendment. It breaks down into micro sulfur, providing slow release of nutrients.</div>
+                                            <a href="https://www.greenhouseandgarden.com/product/disper-sul-90-sulfur/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied fertilizer to thicken up your lawn and improve its health and color.  
+WHAT I NOTICED
+•
+I noticed some areas of your lawn are a different color. Different grass types can be different shades of green. 
+WHAT I RECOMMEND
+•
+In the absence of rain supply one-half to 1 inch of water 1 to 2 times weekly. A rain gauge or even a tuna can will make a good measuring 
+device. 
+•
+How am I doing? Go to TruGreen.com, Acct login & under "How am I doing" click on "take survey" link the feedba...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>March</span>
+                <span class="month-number">Month 3</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">17-2-5 UBM (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>0.4492</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">THRIVE Fertilizer 17-2-5 30% Crn 55 gal | SiteOne US</div>
+                                            <div class="shopping-option-snippet">It is a pre-emergent that helps to maintain a healthy and green lawn. Made from high-quality ingredients, this product kills crabgrass and weeds quickly.</div>
+                                            <a href="https://www.siteone.com/en/lb170205ubn50-55-thrive-fertilizer-17-2-5-30-crn-55-gal/p/344029?srsltid=AfmBOoo0JFsCn5AZY_CWSa_Gvk-bCY_FKdNPGkYzz3eCzRgRMLj5ryud" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">How to convert liquid fert to granule to determine total amounts ...</div>
+                                            <div class="shopping-option-snippet">17-2-5 UBM (NITROGEN, PHOSPHORUS, POTASSIUM). net weight: 10.37 LB/GAL. METHOD: SPRAY, 2.00 GAL/1000SQFT. RATE: .4492 GAL/1000 SQFT. APPLIED AMT ...</div>
+                                            <a href="https://www.reddit.com/r/lawncare/comments/gk9wxq/how_to_convert_liquid_fert_to_granule_to/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">TruGreen Cost - Full Yearly Lawn Plan Revealed</div>
+                                            <div class="shopping-option-snippet">The analysis of the fert is 17-0-5 (from the invoice) which means 17 % is nitrogen. 10.5 x .17 = 1.79. That means there is a total of 1.79 lbs ...</div>
+                                            <a href="https://thelawncarenut.com/blogs/news/trugreen-cost-full-yearly-lawn-plan-revealed?srsltid=AfmBOopplsqbxmVXpMCLWsf3EbWYQTzxNLcKQwb0aKycYKk2XOm2NFOL" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.0025</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0115</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">BARRICADE 4FL (PRODIAMINE) EPA# 100-1139</td>
+                            <td>0.3673</td>
+                            <td>OZ</td>
+                            <td>Annual Grassy Weeds, Annual Bluegrass, Chickweed, Crabgrass, Dandelion, Foxtail, Goosegrass, Henbit,</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied fertilizer, preemergent crabgrass control, and broadleaf  weed control. This will help thicken your lawn, improve its color and 
+prevent annual grasses and other weeds from becoming a problem later on. This treatment will also control any broadleaf weeds in the lawn. 
+Allow 7-21 days for weeds to begin to curl. 
+WHAT I NOTICED
+•
+I noticed some areas of your lawn are greening up faster than others. Your lawn should green up more evenly as it warms up. 
+WHAT I RECOMMEND
+•
+Water ...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>April</span>
+                <span class="month-number">Month 4</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">17-2-5 UBM (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>0.4492</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Canada Thistle, Dichondra, Dandelion, </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">THRIVE Fertilizer 17-2-5 30% Crn 55 gal | SiteOne US</div>
+                                            <div class="shopping-option-snippet">It is a pre-emergent that helps to maintain a healthy and green lawn. Made from high-quality ingredients, this product kills crabgrass and weeds quickly.</div>
+                                            <a href="https://www.siteone.com/en/lb170205ubn50-55-thrive-fertilizer-17-2-5-30-crn-55-gal/p/344029?srsltid=AfmBOoo0JFsCn5AZY_CWSa_Gvk-bCY_FKdNPGkYzz3eCzRgRMLj5ryud" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">How to convert liquid fert to granule to determine total amounts ...</div>
+                                            <div class="shopping-option-snippet">17-2-5 UBM (NITROGEN, PHOSPHORUS, POTASSIUM). net weight: 10.37 LB/GAL. METHOD: SPRAY, 2.00 GAL/1000SQFT. RATE: .4492 GAL/1000 SQFT. APPLIED AMT ...</div>
+                                            <a href="https://www.reddit.com/r/lawncare/comments/gk9wxq/how_to_convert_liquid_fert_to_granule_to/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">TruGreen Cost - Full Yearly Lawn Plan Revealed</div>
+                                            <div class="shopping-option-snippet">The analysis of the fert is 17-0-5 (from the invoice) which means 17 % is nitrogen. 10.5 x .17 = 1.79. That means there is a total of 1.79 lbs ...</div>
+                                            <a href="https://thelawncarenut.com/blogs/news/trugreen-cost-full-yearly-lawn-plan-revealed?srsltid=AfmBOopplsqbxmVXpMCLWsf3EbWYQTzxNLcKQwb0aKycYKk2XOm2NFOL" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0076</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Canada Thistle, Dichondra, Dandelion, </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SPECTICLE FLO (INDAZIFLAM) EPA# 432-1518</td>
+                            <td>0.0918</td>
+                            <td>OZ</td>
+                            <td>Annual Bluegrass, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CHANGE UP (MCPA,FLUROXYPYR,DICAMBA) EPA# 228-445</td>
+                            <td>0.3673</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Chickweed, Canada Thistle, Dandelion, Ground Ivy, Henbit, </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">33-3-6 50% SCU (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>3.0</td>
+                            <td>LB</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional ...</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 NPK 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer | KNX1566399</div>
+                                            <a href="https://www.heritageplus.com/knx1566399-knox-fertilizer-company-turf-fertilizer-50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-1566399" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">lawnDOMINATOR™ 33-3-6 - Sward Yard</div>
+                                            <div class="shopping-option-snippet">lawnDOMINATOR™ 33-3-6 is loaded with slow-release nitrogen and a bit of potassium for overall plant vitality to keep your yard healthy through summer.</div>
+                                            <a href="https://swardyard.com/lawnDOMINATOR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Buy 50 lb Granular Turf Fertilizer 33-3-6 for Lawns - Growcycle</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer by Knox Fertilizer Company for vibrant, healthy turf.</div>
+                                            <a href="https://growcycle.com/gl-irrigation-and-landscape-supply/landscaping/sports-fields/50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-turf-fertilizer-knx1566399-greenline-irrigation-and-landscape-supply?srsltid=AfmBOoqxjkxoK6VlEoqGL9JwCQJFRTr9EVzhK4Q5g-vf45eatcEB44EW" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied fertilizer, preemergent crabgrass control, and broadleaf  weed control. This will help thicken your lawn, improve its color and 
+prevent annual grasses and other weeds from becoming a problem later on. This treatment will also control any broadleaf weeds in the lawn. 
+Allow 7-21 days for weeds to begin to curl. 
+WHAT I NOTICED
+•
+I noticed the turf is thinning due to shade. 
+•
+I noticed The turf is struggling in heavy shade areas. 
+•
+I noticed some bare/very thin areas in the l...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>May</span>
+                <span class="month-number">Month 5</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">33-3-6 50% SCU (NITROGEN,PHOSPHORUS,POTASSIUM) EPA#</td>
+                            <td>3.0</td>
+                            <td>LB</td>
+                            <td>Nutsedge </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional ...</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 NPK 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer | KNX1566399</div>
+                                            <a href="https://www.heritageplus.com/knx1566399-knox-fertilizer-company-turf-fertilizer-50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-1566399" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">lawnDOMINATOR™ 33-3-6 - Sward Yard</div>
+                                            <div class="shopping-option-snippet">lawnDOMINATOR™ 33-3-6 is loaded with slow-release nitrogen and a bit of potassium for overall plant vitality to keep your yard healthy through summer.</div>
+                                            <a href="https://swardyard.com/lawnDOMINATOR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Buy 50 lb Granular Turf Fertilizer 33-3-6 for Lawns - Growcycle</div>
+                                            <div class="shopping-option-snippet">50 lb Bag Granular 33-3-6 N-P-K 16500 sq-ft Coverage Professional Multi-Colored Turf Fertilizer by Knox Fertilizer Company for vibrant, healthy turf.</div>
+                                            <a href="https://growcycle.com/gl-irrigation-and-landscape-supply/landscaping/sports-fields/50-lb-bag-granular-33-3-6-n-p-k-16500-sq-ft-coverage-professional-multi-colored-turf-fertilizer-knx1566399-greenline-irrigation-and-landscape-supply?srsltid=AfmBOoqxjkxoK6VlEoqGL9JwCQJFRTr9EVzhK4Q5g-vf45eatcEB44EW" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.0017</td>
+                            <td>GAL</td>
+                            <td>Nutsedge </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SEDGEHAMMER (HALOSULFURON-METHYL) EPA# 81880-1-10163</td>
+                            <td>0.0225</td>
+                            <td>OZ</td>
+                            <td>Nutsedge </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CELSIUS WG (THIENCARBAZONE-METHYL,IODOSULFURON-METHYL-SODIUM,DICAMBA) EPA# 432-1507</td>
+                            <td>0.0849</td>
+                            <td>OZ</td>
+                            <td>Crabgrass </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied fertilizer to thicken up your lawn and improve its health and color.  
+•
+Today, I treated for broadleaf weeds, annual grasses and nutsedge in your lawn.  You should see these weeds turn color and begin to 
+decline in 7-21 days. For best results avoid mowing for 24 hours.  
+WHAT I NOTICED
+•
+Applied fertilizer that will help with grass growth. Please water for best results.  
+WHAT I RECOMMEND
+•
+I recommend mowing at the proper setting for your grass type during the season to pro...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>June</span>
+                <span class="month-number">Month 6</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">TALSTAR PROFESSIONAL (BIFENTHRIN) EPA# 279-3206</td>
+                            <td>1.0</td>
+                            <td>OZ</td>
+                            <td>Armyworms, Billbugs, Chinchbugs, Cutworm, European Crane Fly, Mites, Mole Crickets, Sod Webworms </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SPT IRON 5% (IRON,SULFUR) EPA#</td>
+                            <td>0.0093</td>
+                            <td>GAL</td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied iron to your lawn. This treatment should enhance turf color.  
+WHAT I NOTICED
+•
+I noticed the turf is thinning due to shade. 
+•
+I noticed The turf is struggling in heavy shade areas. 
+•
+I noticed some bare and thinning areas in your lawn. 
+WHAT I RECOMMEND
+•
+Pruning your trees will help allow more sunlight to reach the grass and help it grow. Be sure to plant a shade tolerant grass. 
+•
+Please consider mulch or a shade tolerant groundcover in this area. 
+•
+I recommend adding ad...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>July</span>
+                <span class="month-number">Month 7</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">TALSTAR PROFESSIONAL (BIFENTHRIN) EPA# 279-3206</td>
+                            <td>1.0</td>
+                            <td>OZ</td>
+                            <td>Armyworms, Billbugs, Chinchbugs, Cutworm, European Crane Fly, Mites, Mole Crickets, Sod Webworms </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SPT IRON 5% (IRON,SULFUR) EPA#</td>
+                            <td>0.0093</td>
+                            <td>GAL</td>
+                            <td>Annual Bluegrass, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">ATRAZINE 4L R.U.P. (ATRAZINE) EPA# 35915-4-60063</td>
+                            <td>0.7511</td>
+                            <td>OZ</td>
+                            <td>Annual Bluegrass, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.0016</td>
+                            <td>GAL</td>
+                            <td>Annual Ryegrass, Burweed, Buttonweed, Chickweed, Clover, Dallisgrass, Dandelion, Fescue Clumps, </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CERTAINTY (SULFOSULFURON) EPA# 524-534</td>
+                            <td>0.0229</td>
+                            <td>OZ</td>
+                            <td>Annual Ryegrass, Burweed, Buttonweed, Chickweed, Clover, Dallisgrass, Dandelion, Fescue Clumps, </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0087</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Chickweed, Clover, Dichondra, Dollarweed </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CELSIUS XTRA (THIENCARBAZONE-METHYL,IODOSULFURON-METHYL-SODIUM,HALOSULFURON-METHYL) EPA# 432-1614</td>
+                            <td>0.1722</td>
+                            <td>OZ</td>
+                            <td>Annual Grassy Weeds, Annual Bluegrass, Annual Broadleaf Weeds, Chickweed, Clover, Nutsedge, Sedge </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied iron and insect control to your lawn. This treatment should help control active pests and enhance turf color.  
+•
+Today, I treated grassy weeds in your lawn.  You should see weeds begin to turn color and decline in 7 - 21 days.  
+WHAT I NOTICED
+•
+Thin and bare areas were observed in your lawn during today's application. Small areas will begin to fill in during application throughout the 
+year, larger areas may require aeration+overseeding. 
+•
+Thin and bare areas were observed ...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>August</span>
+                <span class="month-number">Month 8</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">SPT IRON 5% (IRON,SULFUR) EPA#</td>
+                            <td>0.0093</td>
+                            <td>GAL</td>
+                            <td>Armyworms, Billbugs, Chinchbugs, Cutworm, European Crane Fly, Grubs, Mole Crickets, Sod Webworms </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">ACELEPRYN XTRA (CHLORANTRANILIPROLE,THIAMETHOXAM) EPA# 100-1680</td>
+                            <td>0.2296</td>
+                            <td>OZ</td>
+                            <td>Armyworms, Billbugs, Chinchbugs, Cutworm, European Crane Fly, Grubs, Mole Crickets, Sod Webworms </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied iron and insect control to your lawn. This treatment should help control active pests and enhance turf color.  
+WHAT I NOTICED
+•
+Thin and bare areas were observed in your lawn during today's application. Small areas will begin to fill in during application throughout the 
+year, larger areas may require aeration+overseeding. 
+•
+Thin and bare areas were observed in your lawn during today's application. These areas will begin to fill in throughout the year. Adding a 
+light layer ...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>September</span>
+                <span class="month-number">Month 9</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.005</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0076</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SPECTICLE FLO (INDAZIFLAM) EPA# 432-1518</td>
+                            <td>0.1377</td>
+                            <td>OZ</td>
+                            <td>Annual Bluegrass, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CHANGE UP (MCPA,FLUROXYPYR,DICAMBA) EPA# 228-445</td>
+                            <td>0.3673</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Chickweed, Henbit </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SULFUR,DISPERSABLE 90% S (SULFUR) EPA#</td>
+                            <td>7.0</td>
+                            <td>LB</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">DISPER-SUL Pastelle Water Dispersible Sulfur 90%S 50 lb - SiteOne</div>
+                                            <div class="shopping-option-snippet">DISPER-SUL Pastelle Water Dispersible Sulfur 90%S 50 lb. Martin uses only the purest sulfur combined with a special formulation of bentonite clay and ...</div>
+                                            <a href="https://www.siteone.com/en/bfs90p50-vp-disper-sul-pastelle-water-dispersible-sulfur-90s-50-lb/p/433731?srsltid=AfmBOoqAEP1JSO-VPn6ClLZRmxdC_5ESCgR-VRuxsFWZRFX_Y69cpTAl" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Mears - 90% Sulfur - 50 LB BAG - Reinders</div>
+                                            <div class="shopping-option-snippet">Water degradable sulfur is a 90% sulfur product. Martin uses only the purest sulfur combined with a special formulation of bentonite clay and wetting agents.</div>
+                                            <a href="https://www.reinders.com/mears-90-percent-sulfur-50-lb-bag/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Disper-Sul 90% Sulfur - Green House and Garden Supply |</div>
+                                            <div class="shopping-option-snippet">Disper-Sul is a 90% sulfur, water-degradable pastille used as a soil amendment. It breaks down into micro sulfur, providing slow release of nutrients.</div>
+                                            <a href="https://www.greenhouseandgarden.com/product/disper-sul-90-sulfur/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today I applied preemergent and broadleaf weed control. This  will help prevent annual grasses and other weeds from becoming a problem 
+this winter. This treatment will also control weeds present in your lawn. You should see them discolor and decline within a few weeks. 
+WHAT I NOTICED
+•
+I noticed mower tire tracks are evident in your lawn and turf damage is starting to occur. 
+•
+I noticed plants in your landscape are wilting and showing signs of drought stress. 
+WHAT I RECOMMEND
+•
+Your lawn q...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>October</span>
+                <span class="month-number">Month 10</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.005</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Chickweed </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0096</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Chickweed </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SPECTICLE FLO (INDAZIFLAM) EPA# 432-1518</td>
+                            <td>0.1377</td>
+                            <td>OZ</td>
+                            <td>Chickweed </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">CHANGE UP (MCPA,FLUROXYPYR,DICAMBA) EPA# 228-445</td>
+                            <td>0.3673</td>
+                            <td>OZ</td>
+                            <td>Black Medic, Annual Broadleaf Weeds, Burweed, Chickweed, Clover, Canada Thistle, Dandelion, Ground </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today I applied preemergent and broadleaf weed control. This  will help prevent annual grasses and other weeds from becoming a problem 
+this winter. This treatment will also control weeds present in your lawn. You should see them discolor and decline within a few weeks. 
+•
+Thank you for your business! Please keep an eye out for a message following today's application containing a link to our post-service survey.
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>November</span>
+                <span class="month-number">Month 11</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="product-name">0-0-62, SOLUBLE POTASH (POTASSIUM) EPA#</td>
+                            <td>6.4516</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">0-0-62 MOP Potassium Fertilizer - Lawn Synergy</div>
+                                            <div class="shopping-option-snippet">0-0-62 Muriate of Potash (MOP) Fertilizer delivers a powerful dose of potassium to improve drought tolerance and strengthen turf and plants.</div>
+                                            <a href="https://lawnsynergy.com/products/0-0-62-muriate-of-potash?srsltid=AfmBOooNlTJJ5D2HJY1HvuQrDJXbg-XVPw-eoZjeLm4NZJ1JnOt-IZCd" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Amazon.com : 0-0-62 Muriate of Potash Plant & Lawn Fertilizer - 15lbs.</div>
+                                            <div class="shopping-option-snippet">Potassium Powerhouse: Our Muriate of Potash delivers a concentrated dose of potassium, a vital element for flowering, fruiting, and overall plant resilience.</div>
+                                            <a href="https://www.amazon.com/0-0-62-Muriate-Potash-Lawn-Fertilizer/dp/B0D8G4XFTT" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO 0-0-62 AM MOP Turfgrass Soluble Fertilizer 50 lb. Bag</div>
+                                            <div class="shopping-option-snippet">62% soluble potash (K₂O) enhances turf tolerance to drought, wear, and disease. · Dual application use – can be spread dry or dissolved for spray applications.</div>
+                                            <a href="https://www.siteone.com/en/098661-lesco-0-0-62-am-mop-turfgrass-soluble-fertilizer-50-lb-bag/p/337984?srsltid=AfmBOopxvPQnDYYbqUpR-gmAV1De3HGjIWbQ6_s96X1zeayA4itwXFRR" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">SURFACTANT (NON-IONIC SURFACTANT) EPA#</td>
+                            <td>0.0049</td>
+                            <td>GAL</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Yield Titan's Non-Ionic 80/20 Surfactant for Herbicides, Pesticides ...</div>
+                                            <div class="shopping-option-snippet">This non-ionic surfactant is used for enhanced coverage and penetration of chemical sprays such as herbicides, pesticides, Fertilizers, Fungicides and ...</div>
+                                            <a href="https://www.amazon.com/Yield-Surfactant-Herbicides-Fertilizers-Penetration/dp/B09TYSNQRB" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Alligare 90 Surfactant Wetting Agent - Solutions Pest & Lawn</div>
+                                            <div class="shopping-option-snippet">Alligare 90 Surfactant Wetting Agent is an effective non-ionic low-foam surfactant used to enhance various types of pesticides, insecticides, and herbicides.</div>
+                                            <a href="https://www.solutionsstores.com/alligare-90-wetting-agent?srsltid=AfmBOoq82IZW00SkX8Qwpkbn6o9jUgqCLB7j2k9ZbHiZUoGtuoqfiYLn" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">LESCO Hawkeye Nonionic Organosilicone Surfactant 64 oz - SiteOne</div>
+                                            <div class="shopping-option-snippet">Unparalleled quality standards · For weed control in corn, sorghum, small grains, pasture, hay, rangeland, general farmstead · Treats annual weeds such as common ...</div>
+                                            <a href="https://www.siteone.com/en/400501-lesco-hawkeye-nonionic-organosilicone-surfactant-64-oz/p/641541?srsltid=AfmBOoorrdNxAk4oz_IUz7DBrRWJwmHAAL9P1MZ8lMhy2tw3XE1O95hN" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">MANOR (METSULFURON METHYL) EPA# 228-373</td>
+                            <td>0.0115</td>
+                            <td>OZ</td>
+                            <td>Annual Broadleaf Weeds, Burweed, Buttonweed, Chickweed, Clover, Canada Thistle, Dichondra, Dandelion</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Specially formulated to control annual and perennial weedy grasses such as ryegrass, bahiagrass and foxtail. Also provides effective control of broadleaf weeds.</div>
+                                            <a href="https://nufarm.com/usturf/product/manor/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Manor Herbicide - DoMyOwn.com</div>
+                                            <div class="shopping-option-snippet">Manor Herbicide is a formulation of Metsulfuron Methyl - 60% that is highly selective and is effective against post-emergent perennial and annual weedy grasses.</div>
+                                            <a href="https://www.domyown.com/manor-herbicide-p-2772.html?srsltid=AfmBOoqhEqsWDuEH3O9-IJaJKxggtsmK3aFzsC_SsZd1PeFWvygAu1zY" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] metsulfuron methyl group 2 herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">BAHIAGRASS CONTROL. For the selective control of Bahiagrass in Bermudagrass turf, use 0.25 to 0.75 ounce of this product per acre. Use the higher rates of the ...</div>
+                                            <a href="https://labelsds.com/images/user_uploads/Manor%20Label%205-10-19.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="product-name">TRIPOWER (MCPA,MECOPROP-P,DICAMBA) EPA# 228-262</td>
+                            <td>0.9183</td>
+                            <td>OZ</td>
+                            <td>Black Medic, Annual Broadleaf Weeds </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <div class="shopping-section">
+                                    <h4>🛒 Where to Buy</h4>
+                                    <div class="shopping-results">
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Tri-Power® - US - Turf - Nufarm</div>
+                                            <div class="shopping-option-snippet">Tri-Power is a liquid, three-way herbicide for broadleaf weeds in lawns and turf, used in 2,4-D sensitive areas, and tolerant to warm and cool season turfgrass.</div>
+                                            <a href="https://nufarm.com/usturf/product/tri-power/" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">[PDF] Selective Herbicide - LabelSDS</div>
+                                            <div class="shopping-option-snippet">FOR SELECTIVE BROADLEAF WEED CONTROL IN. ORNAMENTAL LAWNS AND TURF GRASSES. ALSO. FOR WOODY PLANTS, ROADSIDES, AND NON-CROP.</div>
+                                            <a href="https://labelsds.com/images/user_uploads/NY%20Stamped%20TriPower%20Label%2011-15-17.pdf" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                        <div class="shopping-option">
+                                            <div class="shopping-option-title">Mixtures without Triclopyr</div>
+                                            <div class="shopping-option-snippet">Triplet is a selective broadleaf weed control for use on sod farms, highways, rights-of-way, ornamental turf, parks, cemeteries, athletic fields, and golf ...</div>
+                                            <a href="https://pnwhandbooks.org/weed/horticultural/turfgrass/mixtures-without-triclopyr" target="_blank" class="shopping-option-link">View Product →</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="notes">
+                    <strong>📝 Notes from Treatment History:</strong><br>
+                    •
+Today, I applied potash fertilizer to strengthen the root system of your lawn plus weed control to manage existing broadleaf weeds. You 
+should see weeds discolor and decline in 14-21 days.  
+WHAT I NOTICED
+•
+Thin and bare areas were observed in your lawn during today's application. Small areas will begin to fill in during application throughout the 
+year, larger areas may require aeration+overseeding. 
+•
+Thin and bare areas were observed in your lawn during today's application. These areas wi...
+                </div>
+
+            </div>
+        </div>
+
+        <div class="month-section">
+            <div class="month-header">
+                <span>December</span>
+                <span class="month-number">Month 12</span>
+            </div>
+            <div class="month-content">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<tr><td colspan='4' style='text-align:center; color:#999;'>No treatments scheduled</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        </div>
+        
+        <div class="footer">
+            <p>💡 <strong>Pro Tip:</strong> Save this page as PDF (Print → Save as PDF) for a portable reference guide.</p>
+            <p>Last updated: December 04, 2025</p>
+            <p>Powered by Lawn-AI Forecasting + MCP Shopping Discovery</p>
+        </div>
+    </div>
+</body>
+</html>

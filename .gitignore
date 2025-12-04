@@ -29,3 +29,4 @@ ENV/
 
 # Processed data (optional - adjust based on your needs)
 # processed.json can be regenerated from source data
+data/receipts/ai-lawn/**/*.pdf
